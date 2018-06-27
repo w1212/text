@@ -1,0 +1,37 @@
+package service;
+
+import java.sql.SQLException;
+import java.util.List;
+
+import dao.DiancanDao;
+import entity.Dianca;
+
+public class Diancanservice {
+
+	public List<Dianca> find() throws SQLException {
+		// TODO 自动生成的方法存根
+		 DiancanDao dao=new DiancanDao();
+    	 return dao.find();
+		
+	}
+
+	public Dianca find1(String ID)  throws SQLException {
+		// TODO 自动生成的方法存根
+		 DiancanDao dao=new DiancanDao();
+    	 return dao.find1(ID);
+	}
+
+	public int update(Dianca c) throws SQLException  {
+		// TODO 自动生成的方法存根
+		DiancanDao dao=new DiancanDao();
+	   	 return dao.update(c);
+	}
+
+	public Object delete(String ID)throws SQLException {
+		// TODO 自动生成的方法存根
+		DiancanDao dao=new DiancanDao();
+	   	 return dao.delete(ID);
+		
+	}
+
+}
