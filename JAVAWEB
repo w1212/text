@@ -1,104 +1,121 @@
-action
+ dao包
+ 
+ 
+package dao;
 
-package action;
-
-import java.io.IOException;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.List;
 
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import entity.Dianca;
-import service.Diancanservice;
+public class DiancanDao {
+	private Connection conn; 
+	private  PreparedStatement pre;//预编译处理
+	private ResultSet rs;//接受查询信息
+	private Statement  state;
 
-
-
-
-public class DiancanServlet extends HttpServlet{
-	@Override
-	protected void doPost(HttpServletRequest req, HttpServletResponse resp)
-			throws ServletException, IOException {
+	public int add(Dianca dianca) throws SQLException {
 		// TODO 自动生成的方法存根
-		// TODO 自动生成的方法存根
-		req.setCharacterEncoding("utf-8");
-				resp.setContentType("text/html;charset=utf-8");
-				Diancanservice service=new Diancanservice();
-				String action =req.getParameter("action");
-				if(action.equals("list")){
-					try{
-						List<Dianca> diancanList=service.find();
-						req.setAttribute("diancanList",diancanList);
-						req.getRequestDispatcher("diancanList.jsp").forward(req, resp);
-					}catch(Exception e){
-						e.printStackTrace();
-						
-					}
-			
-				}else if(action.equals("dateil")){
-					String ID=req.getParameter("ID");
-					try{
-						Dianca diancanShow=service.find1(ID);
-						req.setAttribute("diancanShow", diancanShow);
-					
-						req.getRequestDispatcher("diancanShow.jsp").forward(req, resp);
-					}catch(Exception e){
-						e.printStackTrace();
-					}
-				
-				}
-				else if(action.equals("updateview")){
-					String ID=req.getParameter("ID");
-					try{
-						Dianca diancanUpdate=service.find1(ID);
-						req.setAttribute("diancanUpdate",diancanUpdate);
-						req.getRequestDispatcher("diancanUpdate.jsp").forward(req, resp);
-					}catch(Exception e){
-						e.printStackTrace();
-					}
-				}else if(action.equals("update")){
-					String ID=req.getParameter("id");
-					String Name=req.getParameter("name");
-					String Tel=req.getParameter("tel");
-					String Cname=req.getParameter("cname");
-					
-					 Dianca c=new Dianca();
-					
-					    c.setID(ID);
-					    c.setName(Name);
-			            c.setTel(Tel);
-			            c.setCname(Cname);
-			            Diancanservice diancanservice=new Diancanservice();
-						 try {
-							diancanservice.update(c);
-							
-							resp.sendRedirect("Diancan?action=list");
-							 
-						} catch (SQLException e) {
-							e.printStackTrace();
-						}}
-				else if(action.equals("delectview")){
-					String ID=req.getParameter("ID");
-					 try{
-						 
-						service.delete(ID);
-					 resp.sendRedirect("Diancan?action=list");
-						 
-					 }catch(Exception e){
-						 e.printStackTrace();
-					 }
-				}
-				}
+		 String sql="insert tb_dianca values('"
+			     +dianca.getID()+"','"
+				 +dianca.getName()+"','"
+				  +dianca.getTel()+"','"
+				   +dianca.getCname()+"')";
+					 
+					 conn=DBConn.getConnection();
+					 Statement state=conn.createStatement();
+					 int result=state.executeUpdate(sql);
+					 state.close();
+					 conn.close();
+					return result;
+					 
+	}
 
-	@Override
-	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
-			throws ServletException, IOException {
+
+	public List<Dianca> find()throws SQLException {
 		// TODO 自动生成的方法存根
-		doPost(req, resp);
+		List<Dianca> list=new ArrayList<Dianca>();
+    	String sql="select * from tb_dianca";
+    	conn=DBConn.getConnection();
+    	state=conn.createStatement();
+    	rs=state.executeQuery(sql);
+    	Dianca c=null;
+    while(rs.next()){
+     c=new Dianca();
+     c.setID(rs.getString("ID"));
+     c.setName(rs.getString("Name"));
+     c.setTel(rs.getString("Tel"));
+     c.setCname(rs.getString("Cname"));
+     list.add(c);
+    }
+    rs.close();
+    state.close();
+    conn.close();
+	return list;
+	}
+
+
+	public Dianca find1() {
+		// TODO 自动生成的方法存根
+		return null;
+	}
+
+
+	public Dianca find1(String ID)throws SQLException  {
+		// TODO 自动生成的方法存根
+		conn=DBConn.getConnection();
+		String sql="select * from tb_dianca where ID=?";
+		pre=conn.prepareStatement(sql);
+		pre.setString(1, ID);
+		rs=pre.executeQuery();
+		 Dianca c=null;
+	        if(rs.next()){
+	            c=new Dianca();
+	            c.setID(rs.getString("ID"));
+	            c.setName(rs.getString("Name"));
+	            c.setTel(rs.getString("Tel"));
+	            c.setCname(rs.getString("Cname"));
+	       
+	           }
+	           rs.close();
+	           conn.close();
+			return c;
+	}
+
+
+	public int update(Dianca c)throws SQLException  {
+		// TODO 自动生成的方法存根
+		int count=0;
+    	conn=DBConn.getConnection();
+    	String sql="update tb_dianca set Name=?,Tel=?,Cname=? where ID=?";
+    	pre=conn.prepareStatement(sql);
+    	
+    	pre.setString(1, c.getName());
+    	pre.setString(2, c.getTel());
+    	pre.setString(3, c.getCname());
+    	pre.setString(4, c.getID());
+    
+    	count=pre.executeUpdate();
+    	pre.close();
+    	conn.close();
+		return count;
+
+	}
+
+
+	public Object delete(String ID)throws SQLException  {
+		// TODO 自动生成的方法存根
+		conn=DBConn.getConnection();
+    	String sql="Delete from tb_dianca where ID=?";
+    	pre=conn.prepareStatement(sql);
+    	pre.setString(1, ID);
+    	int count=pre.executeUpdate();
+    	pre.close();
+    	conn.close();
+		return count;	
 	}
 	}
-  
- 
-
