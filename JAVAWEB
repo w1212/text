@@ -1,1 +1,104 @@
+action
+
+package action;
+
+import java.io.IOException;
+import java.sql.SQLException;
+import java.util.List;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import entity.Dianca;
+import service.Diancanservice;
+
+
+
+
+public class DiancanServlet extends HttpServlet{
+	@Override
+	protected void doPost(HttpServletRequest req, HttpServletResponse resp)
+			throws ServletException, IOException {
+		// TODO 自动生成的方法存根
+		// TODO 自动生成的方法存根
+		req.setCharacterEncoding("utf-8");
+				resp.setContentType("text/html;charset=utf-8");
+				Diancanservice service=new Diancanservice();
+				String action =req.getParameter("action");
+				if(action.equals("list")){
+					try{
+						List<Dianca> diancanList=service.find();
+						req.setAttribute("diancanList",diancanList);
+						req.getRequestDispatcher("diancanList.jsp").forward(req, resp);
+					}catch(Exception e){
+						e.printStackTrace();
+						
+					}
+			
+				}else if(action.equals("dateil")){
+					String ID=req.getParameter("ID");
+					try{
+						Dianca diancanShow=service.find1(ID);
+						req.setAttribute("diancanShow", diancanShow);
+					
+						req.getRequestDispatcher("diancanShow.jsp").forward(req, resp);
+					}catch(Exception e){
+						e.printStackTrace();
+					}
+				
+				}
+				else if(action.equals("updateview")){
+					String ID=req.getParameter("ID");
+					try{
+						Dianca diancanUpdate=service.find1(ID);
+						req.setAttribute("diancanUpdate",diancanUpdate);
+						req.getRequestDispatcher("diancanUpdate.jsp").forward(req, resp);
+					}catch(Exception e){
+						e.printStackTrace();
+					}
+				}else if(action.equals("update")){
+					String ID=req.getParameter("id");
+					String Name=req.getParameter("name");
+					String Tel=req.getParameter("tel");
+					String Cname=req.getParameter("cname");
+					
+					 Dianca c=new Dianca();
+					
+					    c.setID(ID);
+					    c.setName(Name);
+			            c.setTel(Tel);
+			            c.setCname(Cname);
+			            Diancanservice diancanservice=new Diancanservice();
+						 try {
+							diancanservice.update(c);
+							
+							resp.sendRedirect("Diancan?action=list");
+							 
+						} catch (SQLException e) {
+							e.printStackTrace();
+						}}
+				else if(action.equals("delectview")){
+					String ID=req.getParameter("ID");
+					 try{
+						 
+						service.delete(ID);
+					 resp.sendRedirect("Diancan?action=list");
+						 
+					 }catch(Exception e){
+						 e.printStackTrace();
+					 }
+				}
+				}
+
+	@Override
+	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
+			throws ServletException, IOException {
+		// TODO 自动生成的方法存根
+		doPost(req, resp);
+	}
+	}
+  
+ 
 
