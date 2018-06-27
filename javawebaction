@@ -97,3 +97,53 @@ public class DiancanServlet extends HttpServlet{
 		doPost(req, resp);
 	}
 	}
+package action;
+
+import java.io.IOException;
+import java.io.PrintWriter;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import service.Diancanservice;
+
+import dao.DiancanDao;
+import entity.Dianca;
+
+
+
+public class diancanaddServlet extends HttpServlet{
+	@Override
+	protected void doPost(HttpServletRequest req, HttpServletResponse resp)
+			throws ServletException, IOException {
+				req.setCharacterEncoding("utf-8");
+				resp.setContentType("text/html;charset=utf-8");
+				
+				String ID=req.getParameter("ID");
+				String Name=req.getParameter("Name");
+				String Tel=req.getParameter("Tel");
+				String Cname=req.getParameter("Cname");
+				Dianca dianca=new Dianca();
+		
+				dianca.setID(ID);
+				dianca.setName(Name);
+				dianca.setTel(Tel);
+				dianca.setCname(Cname);
+	
+				DiancanDao diancanDao=new DiancanDao();
+				try{
+					diancanDao.add(dianca);
+					PrintWriter out=resp.getWriter();
+					out.print("<h1>预约成功！</h1>");
+				}catch(Exception e){
+					e.printStackTrace();
+				}
+				
+				
+			}
+
+
+
+}
